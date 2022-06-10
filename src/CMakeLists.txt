@@ -1,5 +1,5 @@
 add_executable(keyer
-#  iambic.c
+  iambic.c
   main.c
   )
 
