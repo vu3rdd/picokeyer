@@ -1,6 +1,7 @@
-// Note: This file only has the iambic logic and no I/O, interrupts etc.
-// Hence, it could be reused in other projects. Reading events and producing
-// outputs and actual interfacing with hardware should be done elsewhere.
+// Note: This file only has the iambic logic and no I/O, interrupts
+// etc.  Hence, it could be reused in other projects. Reading events
+// and producing sound/other outputs and actual interfacing with
+// hardware should be done elsewhere.
 
 typedef enum states {
     IDLE,
@@ -9,11 +10,12 @@ typedef enum states {
     DIDAH,  // useful while a DIT is in progress, a DAH event comes in, 
     DADIT,  // useful while a DAH is in progress, a DIT event comes in
     INTER_ELEMENT,
+    LAST_STATE
 } state;
 
 typedef enum events {
     PRESS_DIT,
-    PESS_DAH,
+    PRESS_DAH,
     PRESS_BOTH, // NOT really possible - either a dit has to be
 		// leading or a dah has to be leading.
     RELEASE_DIT,
@@ -25,6 +27,7 @@ typedef enum events {
 		 // 50 elements. So, 20 wpm = 20*50 = 1000 elements
 		 // per 60 seconds, so one element is 60/1000 seconds
 		 // or 60ms.
+    LAST_EVENT
 } event;
 
 // https://users.ox.ac.uk/~malcolm/radio/8044print.pdf
@@ -39,5 +42,12 @@ typedef enum events {
 
 state initial_state = IDLE;
 
-state next_state[state cur_state][event incoming_event] = {
+typedef state (*event_handler)(state cur_state, event incoming_event);
+
+state transitions[LAST_STATE][LAST_EVENT] = {
+    [IDLE] = {
+	[PRESS_DIT] = DIT,
+	[PRESS_DAH] = DAH,
+	[TIMER_EVENT] = IDLE,
+    },
 };
