@@ -30,9 +30,12 @@ typedef enum events {
     LAST_EVENT
 } event;
 
+// A few helpful documents on Iambic keying and on Mode A and Mode B differences.
+//
 // https://users.ox.ac.uk/~malcolm/radio/8044print.pdf
 // https://ag6qr.net/index.php/2017/01/06/iambic-a-or-b-or-does-it-matter/#comment-61
 // http://morse-rss-news.sourceforge.net/keyerdoc/K7QO_Iambic_Paddle.pdf
+// http://wb9kzy.com/modeab.pdf
 
 // Notes
 //
