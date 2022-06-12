@@ -1,13 +1,6 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 
-unsigned char       keyerState;
-unsigned char       iambicMode = IAMBICA;       // or 0 for Iambic A
-unsigned char       keyerControl;
-unsigned int        wpm = 25;
-unsigned long       ditTime;                    // No. milliseconds per dit
-unsigned int        paddleReverse = 1;
-
 enum KSTYPE {IDLE, CHK_DIT, CHK_DAH, KEYED_PREP, KEYED, INTER_ELEMENT };
 
 //  keyerControl bit definitions
@@ -19,6 +12,14 @@ enum KSTYPE {IDLE, CHK_DIT, CHK_DAH, KEYED_PREP, KEYED, INTER_ELEMENT };
 #define     IAMBICB    0x10     // 0 for Iambic A, 1 for Iambic B
 #define     IAMBICA    0x00     // 0 for Iambic A.
 
+unsigned char       keyerState;
+unsigned char       iambicMode = IAMBICA;       // or 0 for Iambic A
+unsigned char       keyerControl;
+unsigned int        wpm = 25;
+unsigned long       ditTime;                    // No. milliseconds per dit
+unsigned int        paddleReverse = 1;
+unsigned int        sidetone_freq = 800;        // 800 Hz
+
 // GPIO pin definitions
 const int   DahPin          = 10;      // Dah paddle input or PTT
 const int   DitPin          = 6;       // Dit paddle input or KEY
@@ -26,6 +27,11 @@ const int   GndPin          = 8;       // Ground
 const int   ledPin          = 13;      //
 
 const int   cw_sound_out    = 4;      // square wave out corresponding to the CW out
+
+
+// global state
+int ptt;                   // the current ptt value
+int key;                   // the current key value
 
 uint64_t millis() {
     uint64_t us = time_us_64();
@@ -45,8 +51,8 @@ void keyerFunc(void)
     switch (keyerState) {
     case IDLE:
         // Wait for direct or latched paddle press
-        if ((gpio_get(DahPin) == LOW) ||
-	    (gpio_get(DitPin) == LOW) ||
+        if ((gpio_get(DahPin) == 0) ||
+	    (gpio_get(DitPin) == 0) ||
 	    (keyerControl & 0x03)) {
             update_PaddleLatch();
             keyerState = CHK_DIT;
@@ -125,19 +131,19 @@ void update_PaddleLatch()
 {
     // XXX: debounce DitPin and DahPin
     if (paddleReverse == 0) {
-	if (gpio_get(DitPin) == LOW) {
+	if (gpio_get(DitPin) == 0) {
 	    keyerControl |= DIT_L;
 	}
 
-	if (gpio_get(DahPin) == LOW) {
+	if (gpio_get(DahPin) == 0) {
 	    keyerControl |= DAH_L;
 	}
     } else {
-	if (gpio_get(DahPin) == LOW) {
+	if (gpio_get(DahPin) == 0) {
 	    keyerControl |= DIT_L;
 	}
 
-	if (gpio_get(DitPin) == LOW) {
+	if (gpio_get(DitPin) == 0) {
 	    keyerControl |= DAH_L;
 	}
     }
@@ -158,8 +164,6 @@ void setupIambic(int on) {
     ptt = gpio_get(DahPin);
     key = gpio_get(DitPin);
   }
-
-  isKeyer = on;
 }
 
 void setupIambicMode(int modeB) {
@@ -185,12 +189,12 @@ int main()
     gpio_init(DahPin);
     gpio_pull_up(DahPin);
     gpio_set_dir(DahPin, GPIO_IN);
-    gpio_set_input_hysteresis_enabled(DahPin, true)
+    gpio_set_input_hysteresis_enabled(DahPin, true);
 
     gpio_init(DitPin);
     gpio_pull_up(DitPin);
     gpio_set_dir(DitPin, GPIO_IN);
-    gpio_set_input_hysteresis_enabled(DitPin, true)
+    gpio_set_input_hysteresis_enabled(DitPin, true);
 
     gpio_put(LED_PIN, 0);
 
