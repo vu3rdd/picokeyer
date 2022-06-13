@@ -1,6 +1,4 @@
 add_executable(keyer
-  # iambic.c
-  # hardware.c
   main.cpp
   )
 
