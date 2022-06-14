@@ -7,11 +7,11 @@ const uint   DahPin          = 8;      // Dah paddle input or PTT
 const uint   DitPin          = 11;       // Dit paddle input or KEY
 const uint   LED_PIN         = PICO_DEFAULT_LED_PIN;
 
-const uint   cw_out          = 7;
+const uint   cw_out          = 4;
 
-unsigned int        wpm = 12;
+unsigned int        wpm = 25;
 
-uint64_t ditTime = 1200000/wpm;
+uint64_t ditTime = 1200/wpm;
 uint64_t dahTime = 3 * ditTime;
 uint64_t keyDownTime = ditTime;
 unsigned int        sidetone_freq = 800;        // 800 Hz
@@ -24,6 +24,12 @@ int keyerState = IDLE;
 int ditPressed = 0;
 int dahPressed = 0;
 int ditProcess = 0; // dit is being processed
+
+uint64_t millis(void) {
+    uint64_t t1 = time_us_64();
+
+    return t1/1000;
+}
 
 void update_paddle_state(void) {
     if (gpio_get(DitPin) == 0) {
@@ -91,26 +97,27 @@ int main() {
 	    }
 	    break;
 	case KEYED_PREP:
-	    gpio_put(LED_PIN, 1);         // turn the LED on
+	    // t1 = time_us_64();
+	    t1 = millis();
 	    myPlayer.tone(sidetone_freq);
-
-	    t1 = time_us_64();
+	    // gpio_put(LED_PIN, 1);         // turn the LED on
 	    ktimeout = t1 + keyDownTime;
 	    keyerState = KEYED;
 
 	    break;
 	case KEYED:
-	    if (time_us_64() > ktimeout) {
-		gpio_put(LED_PIN, 0);
+	    if (millis() > ktimeout) {
+		t1 = millis();
 		myPlayer.stop();
+		//gpio_put(LED_PIN, 0);
 
 		// we now enter inter-element time
 		keyerState = INTER_ELEMENT;
-		ktimeout = time_us_64() + ditTime;
+		ktimeout = t1 + ditTime;
 	    }
 	    break;
 	case INTER_ELEMENT:
-	    if (time_us_64() > ktimeout) {
+	    if (millis() > ktimeout) {
 		if (ditProcess) {
 		    // reset dit
 		    ditPressed = 0;
