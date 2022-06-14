@@ -120,7 +120,6 @@ int main() {
 	case KEYED_PREP:
 	    // t1 = time_us_64();
 	    t1 = millis();
-	    // myPlayer.tone(sidetone_freq);
 	    pwm_set_enabled(slice, true);
 	    // gpio_put(LED_PIN, 1);         // turn the LED on
 	    ktimeout = t1 + keyDownTime;
@@ -130,7 +129,6 @@ int main() {
 	case KEYED:
 	    if (millis() > ktimeout) {
 		t1 = millis();
-		// myPlayer.stop();
 		pwm_set_enabled(slice, false);
 		//gpio_put(LED_PIN, 0);
 
