@@ -3,7 +3,7 @@ add_executable(keyer
   )
 
 # Import pico_stdlib which imports commonly used features
-target_link_libraries(keyer pico_stdlib pico_tone)
+target_link_libraries(keyer pico_stdlib hardware_gpio hardware_pwm)
 
 # Create map/bin/hex file etc.
 pico_add_extra_outputs(keyer)
