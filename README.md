@@ -22,8 +22,9 @@ Output sidetone goes into the PWM output. A low value resistor and an
 electrolytic capacitor in series is recommended before connecting the
 negative pin of the capacitor to the speaker. i.e.:
 
+```
  GPIO pin |- ...\/\/\/\/.....)|---- 🎧
-
+```
 # License
 
 The original code was licenses GPLv2.1 or above. Since we derive from
