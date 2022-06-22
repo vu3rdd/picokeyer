@@ -7,7 +7,8 @@ const uint   DahPin          = 8;      // Dah paddle input or PTT
 const uint   DitPin          = 11;       // Dit paddle input or KEY
 const uint   LED_PIN         = PICO_DEFAULT_LED_PIN;
 
-const uint   cw_out          = 4;
+const uint   pwm_cw_out      = 4; // pwm "audio" out (for sidetone)
+const uint   keyer_out       = 15; // actual dit/dah key down signal to drive the rig
 
 unsigned int        wpm = 25;
 
@@ -76,9 +77,9 @@ int main() {
     gpio_set_dir(DitPin, GPIO_IN);
     gpio_set_input_hysteresis_enabled(DitPin, true);
 
-    gpio_set_function(cw_out, GPIO_FUNC_PWM);
-    uint slice = pwm_gpio_to_slice_num(cw_out);
-    uint channel = pwm_gpio_to_channel(cw_out);
+    gpio_set_function(pwm_cw_out, GPIO_FUNC_PWM);
+    uint slice = pwm_gpio_to_slice_num(pwm_cw_out);
+    uint channel = pwm_gpio_to_channel(pwm_cw_out);
 
     uint32_t wrap = pwm_set_freq_duty(slice, channel, 800, 50);
 
