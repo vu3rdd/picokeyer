@@ -67,6 +67,9 @@ int main() {
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
 
+    gpio_init(keyer_out);
+    gpio_set_dir(keyer_out, GPIO_OUT);
+
     gpio_init(DahPin);
     gpio_pull_up(DahPin);
     gpio_set_dir(DahPin, GPIO_IN);
@@ -122,7 +125,8 @@ int main() {
 	    // t1 = time_us_64();
 	    t1 = millis();
 	    pwm_set_enabled(slice, true);
-	    // gpio_put(LED_PIN, 1);         // turn the LED on
+	    //gpio_put(LED_PIN, 1);         // turn the LED on
+	    gpio_put(keyer_out, 1);
 	    ktimeout = t1 + keyDownTime;
 	    keyerState = KEYED;
 
@@ -131,7 +135,8 @@ int main() {
 	    if (millis() > ktimeout) {
 		t1 = millis();
 		pwm_set_enabled(slice, false);
-		//gpio_put(LED_PIN, 0);
+		// gpio_put(LED_PIN, 0);
+		gpio_put(keyer_out, 0);
 
 		// we now enter inter-element time
 		keyerState = INTER_ELEMENT;
