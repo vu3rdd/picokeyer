@@ -12,11 +12,11 @@ const uint   keyer_out       = 15; // actual dit/dah key down signal to drive th
 
 unsigned int        wpm = 25;
 
-uint64_t ditTime = 1200/wpm;
-uint64_t dahTime = 3 * ditTime;
-uint64_t keyDownTime = ditTime;
-unsigned int        sidetone_freq = 800;        // 800 Hz
+const uint64_t ditTime       = 1200/wpm;
+const uint64_t dahTime       = 3 * ditTime;
+const uint     sidetone_freq = 800;
 
+uint64_t keyDownTime   = ditTime;
 
 enum KSTYPE {IDLE, CHK_DIT, CHK_DAH, KEYED_PREP, KEYED, INTER_ELEMENT };
 
